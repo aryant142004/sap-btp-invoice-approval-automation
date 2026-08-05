@@ -1,4 +1,4 @@
-# sap-btp-invoice-approval-automation
+# SAP-BTP-invoice-approval-automation
 
 # 🏢 Enterprise Accounts Payable Governance & Automated Invoice Approval Workflow
 
