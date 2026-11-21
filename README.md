@@ -9,6 +9,17 @@
 
 ---
 
+### Live Demo & End-to-End Architecture
+* **Video Walkthrough:** [Watch the Full Demo on LinkedIn](https://lnkd.in/p/gtzVMDHf)
+
+```mermaid
+flowchart TD
+    A["1. Invoice Submission Trigger (SAP Build Process Automation)"] --> B["2. Threshold-Based Condition Logic (Routing Rules)"]
+    B -->|Auto-Approve Path| D["4. Status Update & Secure SMTP Email Notification"]
+    B -->|Manager Review Required| C["3. Contextual Task Routing (SAP My Inbox)"]
+    C -->|Approved or Rejected| D
+```
+
 ## 📌 Business Problem & Objective
 
 In traditional enterprise operational models, manual Accounts Payable (AP) processing creates significant financial bottlenecks. Unstructured email chains, manual data-entry handoffs, and delayed manager reviews result in:
