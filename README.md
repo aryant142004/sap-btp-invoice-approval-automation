@@ -12,14 +12,6 @@
 ### Live Demo & End-to-End Architecture
 * **Video Walkthrough:** [Watch the Full Demo on LinkedIn](https://lnkd.in/p/gtzVMDHf)
 
-```mermaid
-flowchart TD
-    A["1. Invoice Submission Trigger (SAP Build Process Automation)"] --> B["2. Threshold-Based Condition Logic (Routing Rules)"]
-    B -->|Auto-Approve Path| D["4. Status Update & Secure SMTP Email Notification"]
-    B -->|Manager Review Required| C["3. Contextual Task Routing (SAP My Inbox)"]
-    C -->|Approved or Rejected| D
-```
-
 ## 📌 Business Problem & Objective
 
 In traditional enterprise operational models, manual Accounts Payable (AP) processing creates significant financial bottlenecks. Unstructured email chains, manual data-entry handoffs, and delayed manager reviews result in:
@@ -36,7 +28,16 @@ By orchestrating the workflow outside the core ERP system, this architecture pre
 
 ## 🏗️ Architecture & Technical Workflow 
 
-[ Vendor / AP Clerk ]│▼┌─────────────────────────────────────────────────────────────┐│ Trigger: VenderInvoiceInputForm                             ││ (Vendor Name, Invoice #, Amount, Department, Email)         │└───────────────────────────┬─────────────────────────────────┘│▼┌─────────────────────────────────────────────────────────────┐│ Orchestration: Invoice_Approval_Process                     ││ ├── BTP Context Mapping                                     ││ └── Threshold & Branching Logic (Approve / Reject / End)    │└───────────────────────────┬─────────────────────────────────┘│┌─────────────┴─────────────┐▼                           ▼┌───────────────────────────┐ ┌───────────────────────────┐│ User Task:                │ │ Notification Engine:      ││ ManagerApprovalTask UI    │ │ BTP Destination           ││ (Rendered in SAP My Inbox)│ │ sap_process_automation_mail│└───────────────────────────┘ └─────────────┬─────────────┘│ (SMTP / STARTTLS)▼┌───────────────────────────┐│ Vendor / Stakeholder Email││ (Decision Notification)   │└───────────────────────────┘
+```mermaid
+flowchart TD
+    A["Vendor / AP Clerk"] -->|Trigger| B["VendorInvoiceInputForm<br/>(Vendor Name, Invoice #, Amount, Department, Email)"]
+    B -->|Orchestration| C["Invoice_Approval_Process<br/>(BTP Context Mapping + Threshold & Branching Logic)"]
+    C -->|Approval Required| D["User Task: ManagerApprovalTask UI<br/>(BTP Destination — Rendered in SAP My Inbox)"]
+    C -->|Auto-Approved / Rejected| E["Notification Engine: sap_process_automation_mail<br/>(SMTP / STARTTLS)"]
+    D -->|Approve / Reject Decision| E
+    E --> F["Vendor / Stakeholder Email<br/>(Decision Notification)"]
+```
+
 ### Key Technical Capabilities
 1. **Dynamic Form Intake (`VenderInvoiceInputForm`):** Serves as the initial entry point, gathering structured invoice metadata and spawning process instances.
 2. **Contextual Task UI (`ManagerApprovalTask`):** Explicitly maps incoming workflow payload variables directly into a custom task UI, preventing blank reviewer panes in **SAP My Inbox**.
